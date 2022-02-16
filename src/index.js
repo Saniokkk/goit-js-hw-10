@@ -30,7 +30,9 @@ function searchCountry() {
 
     fetchCountries(country)
         .then(result => { 
-            if (result.length > 10) {                    
+            if (result.status === 404) {
+                Notify.failure('Oops, there is no country with that name');
+            }else if (result.length > 10) {                    
                 clearDisplay()
                 Notify.info("Too many matches found. Please enter a more specific name.");
             } else if (result.length >= 2 && result.length <= 10) {               
