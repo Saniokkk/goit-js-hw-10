@@ -11,7 +11,7 @@ const debounce = require('lodash.debounce');
 const refs = {
     input: document.querySelector('#search-box'),
     countryList: document.querySelector('.country-list'),
-    countryInfo: document.querySelector('.country-info'),
+    countryInfo: document.querySelector('.country-info'),   
 }
 
 refs.input.addEventListener('input', debounce(searchCountry, DEBOUNCE_DELAY));
@@ -29,21 +29,24 @@ function searchCountry() {
     }
 
     fetchCountries(country)
-        .then(result => { 
-            if (result.status === 404) {
-                Notify.failure('Oops, there is no country with that name');
-            }else if (result.length > 10) {                    
+        .then(result => {
+            if (result.length > 10) {
                 clearDisplay()
+                console.log(result);
                 Notify.info("Too many matches found. Please enter a more specific name.");
             } else if (result.length >= 2 && result.length <= 10) {               
                 clearDisplay()
                 const countries = markupCountries(result);             
                 refs.countryList.innerHTML = countries;
-
+                console.log(result);
             } else if (result.length === 1) {
-                clearDisplay()               
+                clearDisplay()
                 const country = markupCountryTemplate(result[0]);
                 refs.countryInfo.innerHTML = country;            
             }
-    });       
+        })
+        .catch(error => {            
+            clearDisplay()
+            Notify.failure('Oops, there is no country with that name');
+        });       
 }
